@@ -1,3 +1,3 @@
 # restaurant-list
 
-![image](cover.png)
+![image](restaurant-list-cover.png)
