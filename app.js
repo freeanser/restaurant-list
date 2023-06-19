@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 const exphbs = require('express-handlebars')
-const restaurantList = require('./restaurant.json')
 const mongoose = require('mongoose') // 載入 mongoose
+const Restaurant = require('./models/restaurant') // 載入 res model
 
 // 設定連線到 mongoDB
 // mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -31,8 +31,15 @@ app.set('view engine', 'handlebars')
 // setting static files (ex: bootstrapt)
 app.use(express.static('public'))
 
-app.get('/', (req, res) => {
-  res.render('index', { restaurant: restaurantList.results })
+// app.get('/', (req, res) => {
+//   res.render('index', { restaurant: restaurantList.results })
+// })
+
+app.get("/", (req, res) => {
+  Restaurant.find({}) // {}是一個空物件，用於指定查詢的條件。在這種情況下，空物件表示查詢不附加任何條件，即查詢所有的餐廳資料
+    .lean()
+    .then(restaurantsData => res.render("index", { restaurantsData }))
+    .catch(err => console.log(err))
 })
 
 app.get('/restaurants/:restaurant', (req, res) => {
