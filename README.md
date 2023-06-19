@@ -10,6 +10,9 @@ Record your own restaurant list where you can browse restaurants, view detailed 
 * Browse detailed information of restaurants
 * Link restaurant addresses to Google Maps
 * Search for specific restaurants
+* Add a new restaurant
+* Edit an existing restaurant
+* Delete a restaurant
 
 ## Getting Started
 1.  Make sure you have Node.js and npm installed.
