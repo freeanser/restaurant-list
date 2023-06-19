@@ -42,34 +42,74 @@ app.get("/", (req, res) => {
     .catch(err => console.log(err))
 })
 
-app.get('/restaurants/:restaurant', (req, res) => {
-  // console.log('req:', req.params.restaurant) // 找到 id (String)
-  const id = req.params.restaurant
-  const showRestaurant = restaurantList.results.find(item =>
-    id === item.id.toString()) // 找到要 show 的資料
-  res.render('show', { restaurant: showRestaurant })
+// 瀏覽特定餐廳
+app.get("/restaurants/:restaurantId", (req, res) => {
+  const { restaurantId } = req.params
+  Restaurant.findById(restaurantId)
+    .lean()
+    .then(restaurantData => res.render("show", { restaurantData }))
+    .catch(err => console.log(err))
 })
 
-app.get('/search', (req, res) => {
-  // console.log('req:', req.query.keyword) // 找到 search 的關鍵字
-  const keyword = req.query.keyword
-  const searchRestaurant = restaurantList.results.filter(item => {
-    return item.name.toLowerCase().includes(keyword.toLowerCase())
-  })
-  res.render('index', { restaurant: searchRestaurant, keyword: keyword })
+// 搜尋特定餐廳
+app.get("/search", (req, res) => {
+  if (!req.query.keywords) {
+    res.redirect("/")
+  }
+
+  const keywords = req.query.keywords
+  const keyword = req.query.keywords.trim().toLowerCase()
+
+  Restaurant.find({})
+    .lean()
+    .then(restaurantsData => {
+      const filterRestaurantsData = restaurantsData.filter(
+        data =>
+          data.name.toLowerCase().includes(keyword) ||
+          data.category.includes(keyword)
+      )
+      res.render("index", { restaurantsData: filterRestaurantsData, keywords })
+    })
+    .catch(err => console.log(err))
 })
 
+// 新增餐廳頁面
+app.get("/restaurants/new", (req, res) => {
+  res.render("new")
+})
 
-// 使用者可以新增一家餐廳
+// 新增餐廳 之 處理頁面
+app.post("/restaurants", (req, res) => { //該路由僅用於處理 POST 請求(在新增餐廳表單提交後，將資料新增到資料庫)
+  Restaurant.create(req.body) // 使用 req.body 時，它可以讓你獲取到客戶端在 POST 請求中提交的資料
+    .then(() => res.redirect("/"))
+    .catch(err => console.log(err))
+})
 
+// 編輯餐廳頁面
+app.get("/restaurants/:restaurantId/edit", (req, res) => {
+  const { restaurantId } = req.params
+  Restaurant.findById(restaurantId)
+    .lean()
+    .then(restaurantData => res.render("edit", { restaurantData }))
+    .catch(err => console.log(err))
+})
 
-// 使用者可以瀏覽一家餐廳的詳細資訊
+// 更新餐廳 （導倒 ： 瀏覽特定餐廳）
+app.put("/restaurants/:restaurantId", (req, res) => {
+  const { restaurantId } = req.params
+  Restaurant.findByIdAndUpdate(restaurantId, req.body)
+    //可依照專案發展方向自定編輯後的動作，這邊是導向到瀏覽特定餐廳頁面
+    .then(() => res.redirect(`/restaurants/${restaurantId}`))
+    .catch(err => console.log(err))
+})
 
-// 使用者可以瀏覽全部所有餐廳
-
-// 使用者可以修改一家餐廳的資訊
-
-// 使用者可以刪除一家餐廳
+// 刪除餐廳
+app.delete("/restaurants/:restaurantId", (req, res) => {
+  const { restaurantId } = req.params
+  Restaurant.findByIdAndDelete(restaurantId)
+    .then(() => res.redirect("/"))
+    .catch(err => console.log(err))
+})
 
 app.listen(port, () => {
   console.log(`Express is running on http:/localhost:${port}`)
