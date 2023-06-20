@@ -1,17 +1,17 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 2000
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose') // 載入 mongoose
 const Restaurant = require('./models/restaurant') // 載入 res model
-
-// 設定連線到 mongoDB
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+
+// 設定連線到 mongoDB
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // 取得資料庫連線狀態(執行了 mongoose.connect 之後會得到一個連線狀態，我們需要設定一個參數，把連線狀態暫存下來，才能繼續使用)
 const db = mongoose.connection
@@ -44,6 +44,7 @@ app.get("/", (req, res) => {
 
 // 瀏覽特定餐廳
 app.get("/restaurants/:restaurantId", (req, res) => {
+  // console.log(req.params.restaurantId) // 這資料存在
   const { restaurantId } = req.params
   Restaurant.findById(restaurantId)
     .lean()
@@ -95,16 +96,20 @@ app.get("/restaurants/:restaurantId/edit", (req, res) => {
 })
 
 // 更新餐廳 （導倒 ： 瀏覽特定餐廳）
-app.put("/restaurants/:restaurantId", (req, res) => {
+app.post("/restaurants/:restaurantId/edit", (req, res) => {
   const { restaurantId } = req.params
   Restaurant.findByIdAndUpdate(restaurantId, req.body)
     //可依照專案發展方向自定編輯後的動作，這邊是導向到瀏覽特定餐廳頁面
-    .then(() => res.redirect(`/restaurants/${restaurantId}`))
+    .then(() => {
+      res.redirect(`/restaurants/${restaurantId}`)
+      console.log(res)
+    }
+    )
     .catch(err => console.log(err))
 })
 
 // 刪除餐廳
-app.delete("/restaurants/:restaurantId", (req, res) => {
+app.post("/restaurants/:restaurantId", (req, res) => {
   const { restaurantId } = req.params
   Restaurant.findByIdAndDelete(restaurantId)
     .then(() => res.redirect("/"))
