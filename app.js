@@ -4,6 +4,13 @@ const port = 2000
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose') // 載入 mongoose
 const Restaurant = require('./models/restaurant') // 載入 res model
+const methodOverride = require('method-override')
+
+// 引用 body-parser
+const bodyParser = require('body-parser')
+// 用 app.use 規定每一筆請求都需要透過 body-parser 進行前置處理
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
@@ -30,10 +37,6 @@ app.set('view engine', 'handlebars')
 
 // setting static files (ex: bootstrapt)
 app.use(express.static('public'))
-
-// app.get('/', (req, res) => {
-//   res.render('index', { restaurant: restaurantList.results })
-// })
 
 app.get("/", (req, res) => {
   Restaurant.find({}) // {}是一個空物件，用於指定查詢的條件。在這種情況下，空物件表示查詢不附加任何條件，即查詢所有的餐廳資料
@@ -95,21 +98,21 @@ app.get("/restaurants/:restaurantId/edit", (req, res) => {
     .catch(err => console.log(err))
 })
 
-// 更新餐廳 （導倒 ： 瀏覽特定餐廳）
-app.post("/restaurants/:restaurantId/edit", (req, res) => {
+// 更新餐廳 （導到 ： 瀏覽特定餐廳）
+app.put("/restaurants/:restaurantId", (req, res) => {
   const { restaurantId } = req.params
   Restaurant.findByIdAndUpdate(restaurantId, req.body)
     //可依照專案發展方向自定編輯後的動作，這邊是導向到瀏覽特定餐廳頁面
     .then(() => {
       res.redirect(`/restaurants/${restaurantId}`)
-      console.log(res)
+      console.log(req.body)
     }
     )
     .catch(err => console.log(err))
 })
 
 // 刪除餐廳
-app.post("/restaurants/:restaurantId", (req, res) => {
+app.delete("/restaurants/:restaurantId", (req, res) => {
   const { restaurantId } = req.params
   Restaurant.findByIdAndDelete(restaurantId)
     .then(() => res.redirect("/"))

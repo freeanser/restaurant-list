@@ -1,7 +1,7 @@
 <h1 class="mb-1 restaurant-show-title">編輯餐廳 - {{restaurantData.name}}</h1>
 
 <div class="container">
-  <form action="/restaurants/{{restaurantData._id}}/edit?method=PUT" method="POST">
+  <form action="/restaurants/{{restaurantData._id}}?_method=PUT" method="POST">
     {{!-- 表單元素（<form>）的 method 屬性只支援 GET 和 POST 方法，並不支援 PUT 方法。因此，如果想要使用 PUT 方法來更新資源，需要使用其他方法模擬。
       常見的做法是在 <form> 中使用 POST 方法，並在表單中添加一個隱藏的 _method 欄位，值為 "PUT"。在後端服務器收到該請求時，會檢查 _method 欄位的值，並根據其值來執行對應的操作（更新資源） --}}
 
