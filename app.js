@@ -38,14 +38,6 @@ db.once('open', () => {
 
 
 
-// 刪除餐廳
-app.delete("/restaurants/:restaurantId", (req, res) => {
-  const { restaurantId } = req.params
-  Restaurant.findByIdAndDelete(restaurantId)
-    .then(() => res.redirect("/"))
-    .catch(err => console.log(err))
-})
-
 app.listen(port, () => {
   console.log(`Express is running on http:/localhost:${port}`)
 })

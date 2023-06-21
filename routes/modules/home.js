@@ -1,7 +1,8 @@
+const express = require('express')
+const router = express.Router()
+const Restaurant = require('../../models/restaurant')
 
-
-
-app.get("/", (req, res) => {
+router.get("/", (req, res) => {
   Restaurant.find({}) // {}是一個空物件，用於指定查詢的條件。在這種情況下，空物件表示查詢不附加任何條件，即查詢所有的餐廳資料
     .lean()
     .then(restaurantsData => res.render("index", { restaurantsData }))
@@ -9,7 +10,7 @@ app.get("/", (req, res) => {
 })
 
 // 搜尋特定餐廳
-app.get("/search", (req, res) => {
+router.get("/search", (req, res) => {
   if (!req.query.keywords) {
     res.redirect("/")
   }
@@ -29,3 +30,6 @@ app.get("/search", (req, res) => {
     })
     .catch(err => console.log(err))
 })
+
+// 導出此路由
+module.exports = router
