@@ -1,5 +1,6 @@
 // 引入外部套件
 const express = require('express')
+const session = require('express-session')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
@@ -15,6 +16,11 @@ const app = express()
 // 使用 引入的資源
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
+app.use(session({
+  secret: "ThisIsMySecret",
+  resave: false, // resave: 每次跟使用者互動，都會存新的 session
+  saveUninitialized: true // 儲存新的 session
+}))
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 // use：每一個require都需要來這裡; urlencoded：幫忙解析內容
