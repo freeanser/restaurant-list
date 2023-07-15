@@ -30,6 +30,12 @@ app.use(methodOverride('_method'))
 
 usePassport(app) // 因為 passport 最後是輸出一個 function
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next()
+})
+
 app.use(routes)
 
 
