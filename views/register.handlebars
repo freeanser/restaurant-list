@@ -3,6 +3,7 @@
     {{!-- col-md-6： 6/12＝1/2的寬度 m-auto：置中--}}
     <div class="card card-body">
       <h1 class="text-center mt-3">Register</h1>
+      {{>message}}
       <form action="/users/register" method="POST">
         <div class="mb-3">
           <label for="name" class="mb-2">Name</label>

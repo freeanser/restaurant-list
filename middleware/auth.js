@@ -5,6 +5,7 @@ module.exports = {
       return next()
     }
     // 如果沒有被驗證，就回去這裡
+    req.flash('warning_msg', '請先登入才能使用！')
     res.redirect('/users/login')
   }
 }
