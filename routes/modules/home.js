@@ -3,7 +3,8 @@ const router = express.Router()
 const Restaurant = require('../../models/restaurant')
 
 router.get("/", (req, res) => {
-  Restaurant.find({}) // {}是一個空物件，用於指定查詢的條件。在這種情況下，空物件表示查詢不附加任何條件，即查詢所有的餐廳資料
+  const userId = req.user._id
+  Restaurant.find({ userId })
     .lean()
     .then(restaurantsData => res.render("index", { restaurantsData }))
     .catch(err => console.log(err))
