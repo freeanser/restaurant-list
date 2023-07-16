@@ -6,6 +6,13 @@ const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 
+require('dotenv').config()
+
+// 僅在非正式環境時，使用dotenv
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 // 引用自己定義好的設定
 const routes = require('./routes') // = const routes = require('./routes/index')
 const port = 2000
@@ -20,7 +27,7 @@ const app = express()
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 app.use(session({
-  secret: "ThisIsMySecret",
+  secret: process.env.SESSION_SECRET,
   resave: false, // resave: 每次跟使用者互動，都會強制更新 session
   saveUninitialized: true // 儲存新的 session
 }))
