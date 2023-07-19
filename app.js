@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // 引用自己定義好的設定
 const routes = require('./routes') // = const routes = require('./routes/index')
-const port = 2000
+const port = 3000
 
 const usePassport = require('./config/passport')
 require('./config/mongoose')
@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 usePassport(app) // 因為 passport 最後是輸出一個 function
-app.use(flash)
+app.use(flash())
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.user = req.user
@@ -50,5 +50,5 @@ app.use(routes)
 
 
 app.listen(port, () => {
-  console.log(`Express is running on http:/localhost:${port}`)
+  console.log(`Express is running on http://localhost:${port}`)
 })
