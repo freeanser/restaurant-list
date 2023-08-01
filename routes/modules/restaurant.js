@@ -3,11 +3,11 @@ const router = express.Router()
 const Restaurant = require('../../models/restaurant')
 
 // detail 瀏覽特定餐廳
-router.get("/:restaurantId", (req, res) => {
-  // console.log(req.params.restaurantId) // 這資料存在
+router.get("/:id", (req, res) => {
+  // console.log(req.params.id) // 這資料存在
   const userId = req.user._id
-  const { restaurantId } = req.params
-  return Restaurant.findOne({ restaurantId, userId })
+  const _id = req.params.id
+  return Restaurant.findOne({ _id, userId })
     .lean()
     .then(restaurantData => res.render("show", { restaurantData }))
     .catch(err => console.log(err))
@@ -29,35 +29,31 @@ router.post("/", (req, res) => { //該路由僅用於處理 POST 請求(在新�
 })
 
 // edit 編輯餐廳頁面
-router.get("/:restaurantId/edit", (req, res) => {
+router.get("/:id/edit", (req, res) => {
   const userId = req.user._id
-  const { restaurantId } = req.params
-  return Restaurant.findOne({ restaurantId, userId })
+  const _id = req.params.id
+  return Restaurant.findOne({ _id, userId })
     .lean()
     .then(restaurantData => res.render("edit", { restaurantData }))
     .catch(err => console.log(err))
 })
 
 // 更新餐廳 （導到 ： 瀏覽特定餐廳）
-router.put("/:restaurantId", (req, res) => {
+router.put('/:id', (req, res) => {
   const userId = req.user._id
-  const { restaurantId } = req.params
-  const body = req.body
-  return Restaurant.findByIdAndUpdate({ restaurantId, body, userId })
-    //可依照專案發展方向自定編輯後的動作，這邊是導向到瀏覽特定餐廳頁面
-    .then(() => {
-      res.redirect(`/restaurants/${restaurantId}`)
-      // console.log(req.body)
-    }
-    )
-    .catch(err => console.log(err))
+  const _id = req.params.id
+  return Restaurant.updateOne({ _id, userId }, req.body)
+    .then(() => res.redirect(`/restaurants/${_id}`))
+    .catch(error => console.log(error))
 })
 
+
 // 刪除餐廳
-router.delete("/:restaurantId", (req, res) => {
+router.delete("/:id", (req, res) => {
   const userId = req.user._id
-  const { restaurantId } = req.params
-  return Restaurant.findByIdAndDelete({ restaurantId, userId })
+  const _id = req.params.id
+  return Restaurant.findOne({ _id, userId })
+    .then(restaurant => restaurant.remove())
     .then(() => res.redirect("/"))
     .catch(err => console.log(err))
 })
