@@ -8,14 +8,14 @@ const flash = require('connect-flash')
 
 require('dotenv').config()
 
-// 僅在非正式環境時，使用dotenv
+// 僅在非正式環境時，使用dotenv //要放在入口
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
 // 引用自己定義好的設定
 const routes = require('./routes') // = const routes = require('./routes/index')
-const port = 3000
+const port = 2000
 
 const usePassport = require('./config/passport')
 require('./config/mongoose')

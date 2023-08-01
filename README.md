@@ -34,7 +34,7 @@ npm run start
 5. If you see this message, it means the application is running successfully. Open your browser and go to the following URL:
 
 ```bash
-Listening on http://localhost:3000
+Listening on http://localhost:2000
 ```
 
 6. To pause the application, press:
