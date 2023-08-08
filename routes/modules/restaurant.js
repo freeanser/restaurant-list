@@ -2,17 +2,6 @@ const express = require('express')
 const router = express.Router()
 const Restaurant = require('../../models/restaurant')
 
-// detail 瀏覽特定餐廳
-router.get('/:id', (req, res) => {
-  // console.log(req.params.id) // 這資料存在
-  const userId = req.user._id
-  const _id = req.params.id
-  return Restaurant.findOne({ _id, userId })
-    .lean()
-    .then(restaurantData => res.render('show', { restaurantData }))
-    .catch(err => console.log(err))
-})
-
 // 新增餐廳頁面
 router.get('/new', (req, res) => {
   return res.render('new')
@@ -22,9 +11,20 @@ router.get('/new', (req, res) => {
 router.post('/', (req, res) => { //該路由僅用於處理 POST 請求(在新增餐廳表單提交後，將資料新增到資料庫)
   const userId = req.user._id
   const body = req.body
-  return Restaurant.create({ body, userId })
+  return Restaurant.create({ ...body, userId })
     // 使用 req.body 時，它可以讓你獲取到客戶端在 POST 請求中提交的資料
     .then(() => res.redirect('/'))
+    .catch(err => console.log(err))
+})
+
+// detail 瀏覽特定餐廳
+router.get('/:id', (req, res) => {
+  // console.log(req.params.id) // 這資料存在
+  const userId = req.user._id
+  const _id = req.params.id
+  return Restaurant.findOne({ _id, userId })
+    .lean()
+    .then(restaurantData => res.render('show', { restaurantData }))
     .catch(err => console.log(err))
 })
 
