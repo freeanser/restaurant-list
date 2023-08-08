@@ -11,20 +11,21 @@ module.exports = app => {
   app.use(passport.session());
 
   // Strategy
-  passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+  passport.use(new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, (req, email, password, done) => {
     // 這裡的 email, password 是user之前登錄時使用的資料
     User.findOne({ email })
       .then(user => {
         // 登入失敗1:
         if (!user) {
-          // done(第一欄：是否有錯，有錯是err 無錯是null)
-          return done(null, false, { message: "That email is not registered!" })
+          // done(error, user, info)
+          // done(第一個參數：认证过程中是否有錯，有錯是err 無錯是null, user: 是否有找到使用者, info: 其他要顯示的資訊）
+          return done(null, false, req.flash('warning_msg', "That email is not registered!"))
         }
         return bcrypt.compare(password, user.password) //user.password是經過雜湊後的
           .then(isMatch => {
             // 登入失敗2:
             if (!isMatch) {
-              return done(null, false, { message: 'Email or Password incorrect.' })
+              return done(null, false, req.flash('warning_msg', 'The password is incorrect.'))
             }
             // 排除失敗後，成功
             return done(null, user)
