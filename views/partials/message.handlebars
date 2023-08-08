@@ -1,6 +1,9 @@
+{{!-- 記得把 {{> message}} 加入註冊與登入表單 --}}
+
 {{#if errors}}
 {{!-- errors 放在 users.js裡面 --}}
 {{#each errors}}
+{{!-- errors 可能會 = [ { message: 'Email 和 密碼 是必填。' }, { message: '密碼與確認密碼不相符！' } ] --}}
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
   {{{this.message}}}
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
