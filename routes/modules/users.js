@@ -56,11 +56,14 @@ router.post('/register', (req, res) => {
           confirmPassword,
         })
       }
-      return User.create({
-        name,
-        email,
-        password
-      })
+      return bcrypt
+        .genSalt(10)
+        .then(salt => bcrypt.hash(password, salt))
+        .then(hash => User.create({
+          name,
+          email,
+          password: hash
+        }))
         .then(() => res.redirect('/'))
         .catch(err => console.log(err))
     })
