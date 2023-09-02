@@ -6,6 +6,7 @@ router.get("/", (req, res) => {
   const userId = req.user._id
   Restaurant.find({ userId })
     .lean()
+    .sort({ _id: 'asc' })
     .then(restaurantsData => res.render("index", { restaurantsData }))
     .catch(err => console.log(err))
 })

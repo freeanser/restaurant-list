@@ -1,5 +1,7 @@
 module.exports = {
   authenticator: (req, res, next) => {
+    // return next
+
     // 如果 req 已經被驗證，就往 next 前進
     if (req.isAuthenticated()) {
       return next()
